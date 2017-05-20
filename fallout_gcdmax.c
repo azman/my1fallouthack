@@ -337,7 +337,7 @@ int main(int argc, char* argv[])
 			{
 				printf("[ERROR] Expecting %d bytes! "
 					"(or %d bytes less for FO1)\n\n",
-					sizeof(stats_t),sizeof(int));
+					(int)sizeof(stats_t),(int)sizeof(int));
 				break;
 			}
 			/* reset file for read */
@@ -360,6 +360,13 @@ int main(int argc, char* argv[])
 				/* max all primary stats */
 				for(loop=0;loop<STAT_PRIMARY_COUNT;loop++)
 					mystat.primary[loop] = 10;
+				/* recalc secondary stats */
+				mystat.secondary[STAT_HP] = (2*mystat.primary[STAT_EN]) +
+					(1*mystat.primary[STAT_ST]) + 15;
+				mystat.secondary[STAT_AC] = (1*mystat.primary[STAT_AG]) + 0;
+				mystat.secondary[STAT_AP] = (mystat.primary[STAT_AG]/2) + 5;
+				/* killer unarmed damage! */
+				mystat.secondary[STAT_UD] = 100;
 				printf("\nMODDED!\n\n");
 				/* show me! */
 				print_stats(&mystat);
@@ -379,7 +386,7 @@ int main(int argc, char* argv[])
 				}
 				else
 					test = fwrite((void*)&mystat,1,sizeof(stats_t),pfile);
-				printf("\n[HACKED!] => %d (%d)\n",test,sizeof(stats_t));
+				printf("\n[HACKED!] => %d (%d)\n",test,(int)sizeof(stats_t));
 			}
 		}
 		while(0);
